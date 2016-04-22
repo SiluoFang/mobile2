@@ -11,6 +11,8 @@
 
 <script src="libraries/createjs-2015.11.26.min.js"></script>
 <script src="libraries/mobile.js"></script>
+<script src="http://d309knd7es5f10.cloudfront.net/zim_2.6.1.js"></script>
+
 
 
 <script>
@@ -41,7 +43,7 @@ window.addEventListener("load", function() {
 	var find = 10;
 	var clickColor = "#ff9300";
 	var points = 0;
-	var memory = 5;
+	var memory = 3;
 	var total = cols * rows;
 
 	/////////////  LETTERS  /////////////////
@@ -102,11 +104,13 @@ window.addEventListener("load", function() {
 		stage.update();
 	}, memory*1000)
 
+	var button;
 	var correct = 0;
 	var wrong = 0;
 	squares.on("click", myFunction);
 			function myFunction(e) {
 			    if (e.target.right == 1){
+			    	correct++;
 			    	//change the square color to orange
 			    }
 			    else{
@@ -117,11 +121,41 @@ window.addEventListener("load", function() {
 			    // console.log(correct,wrong);
 
 			    compare[e.target.n] = squareColor[e.target.n];
+			    if(squareColor[e.target.n]) {
+			    	var winbtn = document.createElement("BUTTON");        // Create a <button> element
+					var t = document.createTextNode("Win!");       // Create a text node
+					winbtn.appendChild(t);                                // Append the text to <button>
+					document.body.appendChild(winbtn);
+			    	console.log(winbtn);
+			    	console.log('Win');
+			    }
+			    else {
+			    	console.log('Retry');
+			   		var button = new zim.Button(size*2, size, "Retry", "#ff5252");
+			    	// button.graphics.f('#ff5252').rr(-size,-size/2,2*size,size,0.2*size);
+
+			    	button.x = stageW/2;
+			    	button.y = stageH/1.5;
+			    	stage.addChild(button);
+			    	stage.update();
+
+			    	button.addEventListener("click", function(){
+					window.location.href=window.location.href;
+					});
+				}
 			    e.target.children[0].graphics.c().f(colors[squareColor[e.target.n]]).rr(1,0,size,size,size*.001);
 			    stage.update();
 			    var result = compare.join() == squareColor.join();
+
+
 			    console.log(result);
-			    
+			    if(!result){
+			    	// showbutton
+			    }
+			    if(correct>=find){
+			    	//win
+			    	
+			    }
 			}
 
 

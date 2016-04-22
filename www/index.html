@@ -1,62 +1,209 @@
 <!doctype html>
 <html>
 <head>
-<meta charset="utf-8" />
-<title>Mobile Test</title> 
-
-<!-- for CreateJS and ZIMjs http://zimjs.com - free to modify - Dan Zen 2015 -->
-<!-- see http://zimjs.com/templates for more templates and meta tags -->
-<script type="text/javascript" src="js/cordova.js"></script>
-
-<script>var zon = true; // true for comments from zim code
-</script>
-<script src="js/zim_2.4.js"></script><!-- add _doc to see code -->
-<script src="js/createjs-2015.11.26.min.js"></script> 
-<!-- or can go to zimjs.com and createjs.com for individual modules -->
+<meta charset="utf-8">
+<title>IC Advanced Basics - LOGIC</title>
 
 <style>
-	body {margin:0px; padding:0px; background-color:#ccc;}
-	#myCanvas {position:absolute; background-color:#000;}
+	body {margin:0px; padding:0px; background-color:#000; overflow:hidden;}
+	#myCanvas {position:absolute; left:0px; top:0px; background-color:#ffffff;}
 </style>
+
+<script src="libraries/createjs-2015.11.26.min.js"></script>
+<script src="libraries/mobile.js"></script>
+
 
 <script>
 
-// SCALING OPTIONS
-// "none"		sets canvas and stage to dimensions and does not scale if window changes
-// "fit"		sets canvas and stage to dimensions and scales to fit inside window size
-// "outside"	sets canvas and stage to dimensions and scales to fit outside window size
-// "full"		sets canvas and stage to window size (canvas is actually set to screen size)
+window.addEventListener("load", function() {
 
-var scaling = "fit"; // fit scales to fit the browser window while keeping the aspect ratio
-var width = 640;
-var height = 960;
-var frame = new zim.Frame(scaling, width, height); 
-frame.on("ready", function() {	
-	zog("ready from ZIM Frame");
-	
-	var stage = frame.stage;
-	var stageW = frame.width;
-	var stageH = frame.height;
+	var stageW;
+	var stageH;
+	var ready = false;
+	var resize;
+	var orientation;
 
-	// put your code here (you can delete this code)
+	makeCanvas();
 
-	var c = new zim.Circle(100, "powderblue");
-	stage.addChild(c);
-	zim.centerReg(c, stage);
-	zim.drag(c);
+	var stage = new createjs.Stage("myCanvas");
+	stage.enableMouseOver(10);  // leave out if mobile
+	createjs.Touch.enable(stage, true);
+	sizeStage();
+
+	// end template header
+	//------------------------------------------
+	var colors = ["#ffeb00","#ff9300"];
+	// var goodColor = "#ffeb00";
+	// var badColor = "#ffeb00";
+	var cols = 5;
+	var rows = 5;
+	var squareColor = [];
+	var find = 10;
+	var clickColor = "#ff9300";
+	var points = 0;
+	var memory = 5;
+	var total = cols * rows;
+
+	/////////////  LETTERS  /////////////////
 
 	
-	
-	
-	
-	
-	stage.update();	
-	
-}); // end of ready
+	/////////////  squares  /////////////////
+
+	var squares = new createjs.Container();
+	var compare = [];
+	stage.addChild(squares);
+	for (i=0; i<total; i++) {
+		if (i<find){
+			squareColor.push(1);
+
+		}else{
+			squareColor.push(0);
+		}
+		compare.push(0);
+	}
+	var spacing = stageW*.007;
+	var size = (stageW*.8-spacing*(cols-1))/cols;
+	var square, backing;
+	mobile.shuffle(squareColor);
+	console.log(squareColor);
+	function makeSquare (c){
+		squares.removeAllChildren()
+		for (i=0; i<total; i++) {
+			square = new createjs.Container();
+			square.mouseChildren = false;
+			backing = new createjs.Shape();
+			backing.graphics.f(c[squareColor[i]]).rr(1,0,size,size,size*.001);
+			console.log(squareColor[i]);
+			square.addChild(backing);
+			squares.addChild(square);
+			square.right = squareColor[i];
+
+			square.n = i;
+
+			square.x = (size+spacing) * (i%cols);
+			square.y = (size+spacing) * Math.floor(i/cols);
+			// square.letter = letters[i];
+			// var letter = new createjs.Text(square.letter, size*.4 + "px arial", letterColor);
+			// letter.textAlign = "center";
+			// letter.textBaseline = "middle";
+			// square.addChild(letter);
+			// letter.x = letter.y = size/2;
+
+
+		}
+
+	}
+
+	makeSquare(colors);
+
+////time out///
+	setTimeout(function(){
+		makeSquare(["#ffeb00","#ffeb00"]);
+		stage.update();
+	}, memory*1000)
+
+	var correct = 0;
+	var wrong = 0;
+	squares.on("click", myFunction);
+			function myFunction(e) {
+			    if (e.target.right == 1){
+			    	//change the square color to orange
+			    }
+			    else{
+			    	
+			    }
+			    // console.log(e.target.right);
+			    // e.target.right = 0;
+			    // console.log(correct,wrong);
+
+			    compare[e.target.n] = squareColor[e.target.n];
+			    e.target.children[0].graphics.c().f(colors[squareColor[e.target.n]]).rr(1,0,size,size,size*.001);
+			    stage.update();
+			    var result = compare.join() == squareColor.join();
+			    console.log(result);
+			    
+			}
+
+
+	squares.x = stageW*.1;
+	squares.y = stageW*.1;
+
+	squares.cursor = "pointer";
+	// squares.on("mousedown", function(e) {
+	// 	if (answer.text == "SWIPE TO SCORE") answer.text = "";
+	// 	answer.text += e.target.letter;
+	// 	stage.update();
+	// });
+
+
+	resize = function() {
+		// here is where we put code to resize
+
+		stage.update();
+	}
+
+	stage.update();
+	ready = true;
+
+	// ----------------------------------------------
+	// start template footer
+	function makeCanvas() {
+		// make a canvas tag and apply attributes for id, width and height
+		var canvas = document.createElement("canvas");
+		canvas.setAttribute("id", "myCanvas");
+
+		// get maximum size for canvas
+		// note: iOS6 does not work from loading icon unless keep canvas within device size
+		// thank you apple for this and many other days of hell
+		largest = Math.max(window.innerWidth, screen.width, window.innerHeight, screen.height);
+		if (!/ip(hone|od|ad)/i.test(navigator.userAgent)) largest *= 3; // handle up to three monitors
+		canvas.setAttribute("width", largest);
+		canvas.setAttribute("height", largest);
+
+		// add our canvas tag
+		document.body.appendChild(canvas);
+
+		// stop the canvas from moving when certain keys are pressed (pgdwn, pgup, arrows, home, end)
+		// and stop scrollwheel from moving page
+		var a = function(e) {
+			if (!e) e = event;
+			if (e.keyCode && (e.keyCode >= 32 && e.keyCode <= 40)) e.preventDefault();
+		}
+		var b = function(e) {
+			if (!e) e = event;
+			e.preventDefault();
+		}
+		var c = b;
+		window.addEventListener("keydown", a);
+		window.addEventListener("mousewheel", b);
+		window.addEventListener("DOMMouseScroll", c);
+		window.addEventListener('resize', function() {
+			sizeStage();
+			if (/android|nexus/i.test(navigator.userAgent)) {
+				setTimeout(function() {
+					sizeStage();
+				}, 500); // to catch delayed screen sizes
+			}
+		});
+	}
+
+	function sizeStage() {
+		// earlier than IE9 does not have innerWidth
+		// inner is better on mobile when zoomed so can't always use client
+		// ternary operator
+		stageW = isNaN(window.innerWidth) ? window.clientWidth : window.innerWidth;
+		stageH = isNaN(window.innerHeight) ? window.clientHeight : window.innerHeight;
+
+		// if wider than high then we have horizontal (or landscape)
+		orientation = (stageW>stageH) ? "horizontal" : "vertical";
+
+		if (stage) stage.setBounds(0,0,stageW,stageH);
+		if (ready) resize();
+	}
+});
+
 </script>
 </head>
-
 <body>
-<!-- canvas with id="myCanvas" is made by zim Frame -->
 </body>
 </html>

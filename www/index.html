@@ -128,7 +128,11 @@ window.addEventListener("load", function() {
 					// document.body.appendChild(winbtn);
 			  //   	console.log(winbtn);
 			    	if (correct >= find){
-			    		var button = new zim.Button(size*6, size, "Win!!  (Swipe it to start a new play)", "#ff5252");
+
+			    		var label = new zim.Label({text:"Win!! (Swipe it to start a new play)", size:5, color:"white", align:"center"});
+			    		stage.addChild(label);
+
+			    		var button = new zim.Button(size*6, size, label, "#ff5252");
 				    	// button.graphics.f('#ff5252').rr(-size,-size/2,2*size,size,0.2*size);
 
 				    	button.x = stageW/28;
@@ -181,7 +185,11 @@ window.addEventListener("load", function() {
 			    }
 			    else {
 			    	console.log('Retry');
-			   		var button = new zim.Button(size*6, size, "Retry  (Swipe it to try again)", "#ff5252");
+			    	var label = new zim.Label({text:"Retry (Swipe it to try again)", size:5, color:"white", align:"center"});
+			    		stage.addChild(label);
+
+			    		var button = new zim.Button(size*6, size, label, "#ff5252");
+			   		// var button = new zim.Button(size*6, size, "Retry  (Swipe it to try again)", "#ff5252");
 			    	// button.graphics.f('#ff5252').rr(-size,-size/2,2*size,size,0.2*size);
 
 			    	button.x = stageW/28;
@@ -304,6 +312,6 @@ window.addEventListener("load", function() {
 </script>
 </head>
 <body>
-<h3>Memory~</h3>
+
 </body>
 </html>

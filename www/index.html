@@ -40,7 +40,7 @@ window.addEventListener("load", function() {
 	var cols = 5;
 	var rows = 5;
 	var squareColor = [];
-	var find = 10;
+	var find = 5;
 	var clickColor = "#ff9300";
 	var points = 0;
 	var memory = 3;
@@ -122,26 +122,91 @@ window.addEventListener("load", function() {
 
 			    compare[e.target.n] = squareColor[e.target.n];
 			    if(squareColor[e.target.n]) {
-			    	var winbtn = document.createElement("BUTTON");        // Create a <button> element
-					var t = document.createTextNode("Win!");       // Create a text node
-					winbtn.appendChild(t);                                // Append the text to <button>
-					document.body.appendChild(winbtn);
-			    	console.log(winbtn);
-			    	console.log('Win');
+			  //   	var winbtn = document.createElement("BUTTON");        // Create a <button> element
+					// var t = document.createTextNode("Win!");       // Create a text node
+					// winbtn.appendChild(t);                                // Append the text to <button>
+					// document.body.appendChild(winbtn);
+			  //   	console.log(winbtn);
+			    	if (correct >= find){
+			    		var button = new zim.Button(size*6, size, "Win!!  (Swipe it to start a new play)", "#ff5252");
+				    	// button.graphics.f('#ff5252').rr(-size,-size/2,2*size,size,0.2*size);
+
+				    	button.x = stageW/28;
+				    	button.y = stageH/1.5;
+				    	stage.addChild(button);
+				    	stage.update();
+
+				    	button.cursor = "pointer";
+						mobile.swipe(button);
+						button.on("swipe", function(e) {
+
+							if (e.swipeX != -1) return;
+							console.log("hello");
+							createjs.Tween.get(button)
+								.to({x:stageW/2 + e.swipeX*stageW*2}, 500)
+								.call(function(){
+									window.location.href=window.location.href;
+									
+								});
+							var tick = createjs.Ticker.on("tick", stage);
+						});
+
+
+			    		{console.log('Win');}
+			    	}
+
+			  //   	var button = new zim.Button(size*6, size, "Win!!!!!  (Swipe it to start a new play)", "#ff5252");
+			  //   	button.x = stageW/28;
+			  //   	button.y = stageH/1.5;
+			  //   	stage.addChild(button);
+			  //   	stage.update();
+
+			  //   	button.cursor = "pointer";
+					// mobile.swipe(button);
+					// button.on("swipe", function(e) {
+					// 	if (e.swipeX != -1) return;
+					// 	createjs.Tween.get(answer)
+					// 		.to({x:stageW/2 + e.swipeX*stageW*2}, 500)
+					// 		.call(function(){
+					// 			window.location.href=window.location.href;
+								
+					// 		});
+					// 	var tick = createjs.Ticker.on("tick", stage);
+					// });
+			    	
+
+
+			    	
+
 			    }
 			    else {
 			    	console.log('Retry');
-			   		var button = new zim.Button(size*2, size, "Retry", "#ff5252");
+			   		var button = new zim.Button(size*6, size, "Retry  (Swipe it to try again)", "#ff5252");
 			    	// button.graphics.f('#ff5252').rr(-size,-size/2,2*size,size,0.2*size);
 
-			    	button.x = stageW/2;
+			    	button.x = stageW/28;
 			    	button.y = stageH/1.5;
 			    	stage.addChild(button);
 			    	stage.update();
 
-			    	button.addEventListener("click", function(){
-					window.location.href=window.location.href;
+			    	button.cursor = "pointer";
+					mobile.swipe(button);
+					button.on("swipe", function(e) {
+
+						if (e.swipeX != -1) return;
+						console.log("hello");
+						createjs.Tween.get(button)
+							.to({x:stageW/2 + e.swipeX*stageW*2}, 500)
+							.call(function(){
+								window.location.href=window.location.href;
+								
+							});
+						var tick = createjs.Ticker.on("tick", stage);
 					});
+
+			  //   	button.addEventListener("click", function(){
+					// window.location.href=window.location.href;
+					// });
 				}
 			    e.target.children[0].graphics.c().f(colors[squareColor[e.target.n]]).rr(1,0,size,size,size*.001);
 			    stage.update();
@@ -239,5 +304,6 @@ window.addEventListener("load", function() {
 </script>
 </head>
 <body>
+
 </body>
 </html>
